@@ -153,6 +153,7 @@ weather_df |>
 ```
 
 ## setting options
+setting option for later use
 ```{r, eval = FALSE}
 library (tidyverse)
 
@@ -174,6 +175,21 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 
+## Data args in `geom`
+
+```{r}
+central_park = 
+  weather_df |>
+  fliter(name == "CentralPark_NY")
+
+waikiki = 
+  weather_df |>
+  fliter(name == "Waikiki_HA")
+
+ggplot(data = waikiki, aes(x = date, y = tmax, color = name)) + 
+  geom_point() +
+  geom_line(data = central_park) ## draw line for diff dataset
+```
 
 
 
