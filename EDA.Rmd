@@ -145,12 +145,53 @@ weather_df |>
   knitr::kable(digits = 1)
 ```
 
+## `group_by` and `mutate`
+```{r}
+weather_df |>
+  group_by(name) |>
+  mutate (
+    mean_tmax = mean (tmax, na.rm = TURE),
+    centered_tmax = tmax - mean_tmax
+  )|>
+  ggplot(aes(x = datem y = centered_tmax, color = name)) +
+  geom_point()
+```
 
 
+what about window functions
 
+ranking ..
+```{r}
+weather_df |>
+  group_by (name, month) |>
+  mutate(temp_rank = min_rank(tmax)) |>
+  filter (temp_rank == 1) # min = low temp, "temp_rank == 1" the coldest day
+```
 
+rank in the opposite 
+```{r}
+weather_df |>
+  group_by (name, month) |>
+  mutate(temp_rank = min_rank(desc(tmax)) #in a descending order 
+```
 
+lag
+```{r}
+weather_df |>
+  group_by(name) |>
+  mutate (lag_temp = lag(tmax, 5))
+```
 
+compute date-to-date temp variability, se and temp for each weather stations over the course of the year
+```{r}
+weather_df |>
+  group_by(name) |>
+  mutate (lag_temp = tmax - lag(tmax)) |>
+  summarize (
+    temp_change_max = max(temp_change, na.rm = TRUE),
+    temp_change_sd = sd(temp_change, na.rm = TRUE)
+  )
+```
 
 
 
