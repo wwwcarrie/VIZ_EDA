@@ -68,10 +68,34 @@ weather_df |>
     n_days = n_distinct(date))
 ```
 
+## a digression on 2x2 tables
 
+```{r}
+weather_df |>
+  filter (name != "Waikiki_HA") |> #! = not equal to 
+  mutate (
+    cold = case_when( # when xx condition is true, then...
+      tmax < 5 ~ "cold",
+      tmax >= 5 ~ "not_cold"
+    )
+  )|>
+  group by (name, cold) |>
+  summarize (count = n()) 
 
+```
 
-
+quicker way:
+```{r}
+weather_df |>
+  filter (name != "Waikiki_HA") |> #! = not equal to 
+  mutate (
+    cold = case_when( # when xx condition is true, then...
+      tmax < 5 ~ "cold",
+      tmax >= 5 ~ "not_cold"
+    )
+  )|>
+  janitor:: tabyl(name, cold)
+```
 
 
 
