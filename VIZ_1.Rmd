@@ -1,0 +1,201 @@
+---
+title: "visualization"
+subtitle: "part 1"
+output: github_document
+---
+install.packages("ggridges")
+
+```{r}
+library (tidyverse)
+library (ggridges)
+library (rnoaa)
+```
+
+## load the weather data
+```{r}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USW00022534", "USS0023B17S"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2021-01-01",
+    date_max = "2022-12-31") |>
+  mutate(
+    name = case_match (
+      id, 
+      "USW00094728" ~ "CentralPark_NY", 
+      "USW00022534" ~ "Molokai_HI",
+      "USS0023B17S" ~ "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) |>
+  select(name, id, everything()) # put name and id in the front, everthing comes follow
+
+```
+
+## scatterplots!!
+
+create my first scatterplot ever.
+
+```{r}
+ggplot(weather_df, aes(x = tmin, y = tmax)) + 
+  geom_point() #generate the points
+```
+
+New approach, same plot.
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point()
+```
+
+save abd edur a plot object.
+```{r}
+weather_plot = 
+  weather_df |>
+  ggplot(aes(x = tmin, y = tmax))
+
+weather_plot + geom_point ()
+```
+
+## Advance scatterplot ...
+
+start with the same one and make it fancy!
+
+```{r}
+warther_df |>
+  ggplot (aes(x = tmin, y = tmax, color = name)) + #points become colorful, depend on different categories, points are labeled into different colors
+  geom_point() + #show points
+  geom_smooth (se = FALSE) #standard error = false, show 3 smooth curves between points, indicates se for 3 variables #show lines
+```
+
+what about the `aes` placement?
+```{r}
+warther_df |>
+  ggplot (aes(x = tmin, y = tmax)) + 
+  geom_point(aes(color = name)) + # color only define inside of geom_point instead of the whole things
+  geom_smooth () #where is the different. only one line for the whole graph
+```
+
+Let's facet some things!!
+
+```{r}
+warther_df |>
+  ggplot (aes(x = tmin, y = tmax, color = name)) + 
+  geom_point(alpha = 0.2, size = 0.3) + #define transparency, make points transparent, so that you can see points and line, small number = more transparent
+  geom_smooth (se = FALSE, size = 2) + 
+  facet_grid(. ~ name) #generate 3 planes plots for 3 variables, vertical
+
+#if put facet_grid (name ~ .) plots became horizontal 
+
+warther_df |>
+  ggplot (aes(x = tmin, y = tmax, alpha = tmin, color = name)) + #alpha = tmin, make points, transparent on the bottom, visible on the top, 
+  geom_point() + 
+  geom_smooth (se = FALSE) + 
+  facet_grid(. ~ name) 
+
+```
+
+Let's combine some elements and try a new plot.
+```{r}
+weather_df |>
+  ggplot (aes(x = date, y = tmax, color = name)) +
+  geom_point(aes(size = prcp), alpha = 0.5) + #aes(size = prcp) based on the intensity, points big or small
+  geom_smooth (se = FALSE)
+
+```
+
+## some small notes
+
+how mant geoms have to exist?
+- you can have whatever geom you want.
+```{r}
+waether_df |>
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_smooth (se = FALSE)
+```
+
+
+You can use a neat geom!
+```{r}
+weather_df |>
+  ggplot(aes (x = tmin, y = tmax)) + 
+  geom_hex() #points become hexagon
+
+#geom_bin2d() points become square
+#geom_density2d () points become contour plot
+```
+
+## Univariate plots
+histograms are really great.
+```{r}
+weather_df |>
+  ggplot (aes(x=tmin)) +
+  geom_histogram()
+```
+
+Can we add color ..
+```{r}
+weather_df |>
+  ggplot (aes(x=tmin, fill = name)) +
+  geom_histogram(position = "dodge") # bars list side by side
+```
+
+```{r}
+weather_df |>
+  ggplot (aes(x=tmin, fill = name)) +
+  geom_histogram() +
+  facet_grid (.~ name) # generate 3 plots respectively 
+```
+
+Let's try new geometry!
+```{r}
+waether_df |>
+  ggplot (ase (x = tmin, fil= name)) +
+  geom_density (alpha = 0.3, adjust = .5)
+```
+
+Box plots
+
+```{r}
+weather_df |>
+  ggplot (aes(x = name, y = tmin)) +
+  geom_boxplot()
+```
+
+
+Trendy plots
+
+```{r}
+weather_df |>
+  ggplot(aes(x = name, y = tmin, fill = name)) |>
+  geom_violin (alpha = .5) +
+  stat_summary (fun = "median")
+```
+
+
+Ridge plots - - the most popular plot of 2017
+```{r}
+weather_df |>
+  ggplot (aes(x = tmin, y = name)) +
+  geom_density_ridges ()
+```
+
+## save and embed
+
+Let's save a scatterplot
+```{r}
+weather_plot |>
+  ggplot (aes (x = tmin, y = tmax, color = name)) +
+  gemo_point (alpha = .5)
+
+ggsave ("./results/weather_plot.pdf", weather_plot, width = 8, height = 5)
+```
+
+What about embedding 
+```{r, fig.width= 12, fig.height=6}
+weather_plot
+```
+
+
+
+
+
