@@ -52,12 +52,63 @@ weather_df |>
   )
 ```
 
+## scales
 
+start with the same plot
 
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point (alpha = .5) +
+  labs (
+    title = "Temperature plot",
+    x = "Minimum daily temperature (C)",
+    y = "Maximum daily temperature (C)",
+    caption = "Data from rnoaa paackage; temperature in 2017."
+  ) +
+  scale_x_continuous( #x-axis for continuous variables
+    breaks = c(-15, 0, 15), # x-axis range
+    labels = c("-15 C", "0", "15") # adding tick mark
+  ) +
+  scale_y_continuous(
+    trans = "sqrt", #square root; "log" for log;
+    position = "right", # put y-aix on right side
+  )
+```
 
+look at color scales
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point (alpha = .5) +
+  labs (
+    title = "Temperature plot",
+    x = "Minimum daily temperature (C)",
+    y = "Maximum daily temperature (C)",
+    caption = "Data from rnoaa paackage; temperature in 2017."
+  ) +
+  scale_color_hue(
+    name = "Location", #change the title of caption label
+    h = c(100,300)) 
+```
 
+or
 
-
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point (alpha = .5) +
+  labs (
+    title = "Temperature plot",
+    x = "Minimum daily temperature (C)",
+    y = "Maximum daily temperature (C)",
+    caption = "Data from rnoaa paackage; temperature in 2017."
+  ) +
+  viridis::scale_color_viridis ( # viridis for continuous variable
+    name = "Location", #change the title of caption label
+    discrete = TURE #tell R it's discrete variable
+    ) 
+```
 
 
 
