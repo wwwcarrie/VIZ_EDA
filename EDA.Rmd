@@ -34,14 +34,39 @@ weather_df
 
 ```{r}
 weather_df |>
-  group_by(names, month) |>
-
+  group_by(names, month)
 ```
 
+## counting things
 
+count month / name observation
+```{r}
+weather_df |>
+  group_by(name, month) |>
+  summarize(n_obs = n())
+```
 
+we can use `count`
+```{r}
+weather_df |>
+  count (name, month, name = "n_obs")
+```
 
+** NEVER ** use base R's `table`
+```{r, eval = FALSE}
+weather_df |>
+  pull(month) |>
+  table()
+```
 
+other helpful counters
+```{r}
+weather_df |>
+  group_by(name, month) |>
+  summarize(
+    n_obs = n(),
+    n_days = n_distinct(date))
+```
 
 
 
