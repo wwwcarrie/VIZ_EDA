@@ -49,7 +49,7 @@ weather_df |>
     x = "Minimum daily temperature (C)",
     y = "Maximum daily temperature (C)",
     caption = "Data from rnoaa paackage; temperature in 2017."
-  )
+  ) ## default color: red, blue, green
 ```
 
 ## scales
@@ -89,7 +89,7 @@ weather_df |>
   ) +
   scale_color_hue(
     name = "Location", #change the title of caption label
-    h = c(100,300)) 
+    h = c(100,300)) # light purple, turquoise, green
 ```
 
 or
@@ -105,13 +105,52 @@ weather_df |>
     caption = "Data from rnoaa paackage; temperature in 2017."
   ) +
   viridis::scale_color_viridis ( # viridis for continuous variable
-    name = "Location", #change the title of caption label
+    name = "Location", #change the title of ledgend
     discrete = TURE #tell R it's discrete variable
-    ) 
+    ) # yellow, purple, turquoise
 ```
 
+## themes
 
+shift the ledgend.
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point (alpha = .5) +
+  labs (
+    title = "Temperature plot",
+    x = "Minimum daily temperature (C)",
+    y = "Maximum daily temperature (C)",
+    caption = "Data from rnoaa paackage; temperature in 2017."
+  ) +
+  viridis::scale_color_viridis ( # viridis for continuous variable
+    name = "Location", #change the title of caption label
+    discrete = TURE  ) + #tell R it's discrete variable
+   theme (legned.position = "bottom")
+  
+```
 
+change the overall theme
+```{r}
+weather_df |>
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point (alpha = .5) +
+  labs (
+    title = "Temperature plot",
+    x = "Minimum daily temperature (C)",
+    y = "Maximum daily temperature (C)",
+    caption = "Data from rnoaa paackage; temperature in 2017."
+  ) +
+  viridis::scale_color_viridis (
+    name = "Location", 
+    discrete = TURE)+
+ 
+  theme_bw () #change background to back and white
+  theme_minimal () # same as default, but without the frame box
+  them_classic ()
+  ggthemes::theme_economist()
+  ggthemes:: theme_excel ()
+```
 
 
 
